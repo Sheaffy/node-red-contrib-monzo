@@ -31,6 +31,11 @@ module.exports = function(RED) {
         }
         var node = this;
         node.on('input', function(msg) {
+            this.status({
+                fill: "yellow",
+                shape: "dot",
+                text: "requesting"
+            });
             if (!this.monzoConfig) {
                 this.status({
                     fill: "red",
@@ -47,6 +52,11 @@ module.exports = function(RED) {
                                 "response": acc._account
                             };
                             node.send(msg);
+                            this.status({
+                                fill: "green",
+                                shape: "dot",
+                                text: "ready"
+                            });
                         }
                     }).catch(error => {
                         node.error("your token is not authenticated.", msg);
@@ -64,6 +74,11 @@ module.exports = function(RED) {
                                 "response": acc._balance._balance
                             };
                             node.send(msg);
+                            this.status({
+                                fill: "green",
+                                shape: "dot",
+                                text: "ready"
+                            });
                         }
                     }).catch(error => {
                         node.error("your token is not authenticated.", msg);
@@ -84,6 +99,11 @@ module.exports = function(RED) {
                                 }
                             };
                             node.send(msg);
+                            this.status({
+                                fill: "green",
+                                shape: "dot",
+                                text: "ready"
+                            });
                         }
                     }).catch(error => {
                         node.error("your token is not authenticated.", msg);

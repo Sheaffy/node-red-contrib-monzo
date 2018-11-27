@@ -8,7 +8,7 @@ This is an easy to use node, all you have to do is input a access token and sele
 
 - [Installation](#installation)
 - [Getting your AccessToken](#token)
-- [usage](#usage)
+- [Usage](#usage)
 - [Capability](#cap)
 
 
