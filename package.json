@@ -1,0 +1,23 @@
+{
+    "name": "node-red-contrib-monzo",
+    "version": "1.0.0",
+    "description": "This is a wrapper that will allow a connection to the monzo bank API for use within node-red",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Sheaffy/node-red-contrib-monzo"
+    },
+    "keywords": ["node-red", "nodered", "monzo", "mondo", "bank", "api"],
+    "author": "Ashley Sheaff",
+    "license": "MIT",
+    "dependencies": {
+        "monzo-js": "^0.0.6"
+    },
+    "node-red": {
+        "nodes": {
+            "monzo-in": "monzo/monzo.js"
+        }
+    }
+}

@@ -1,0 +1,78 @@
+<script data-template-name="monzo-credentials" type="text/x-red">
+    <div class="form-row">
+        <label style="margin-left: 20px;" for="node-config-input-token"><span ">Access Token</span></label>
+        <input type="password" id="node-config-input-token">
+    </div>
+</script>
+<script data-help-name="monzo-credentials" type="text/x-red">
+    <p>You will find your access token when logged into the monzo developer website.</p>
+</script>
+<script type="text/javascript">
+    (function() {
+
+    RED.nodes.registerType('monzo-credentials',{
+        category: 'config',
+        defaults: {
+        },
+        credentials: {
+            token: {type:"password"}
+        },
+        label: function() {
+           
+            return "Monzo: "+this.id
+            
+        },
+        exportable: false,
+        oneditsave: function() {
+            var trimFields = [
+                "token"
+            ];
+            // Just in case any whitespace has crept in with the copy-paste of the fields
+            trimFields.forEach(function(field) {
+                var v = $("#node-config-input-"+field).val();
+                v = v.trim();
+                $("#node-config-input-"+field).val(v);
+            });
+        }
+    });
+
+})();
+</script>
+<script type="text/javascript">
+    RED.nodes.registerType('monzo-in',{
+        category: 'banking',
+        color: '#F3AAA9',
+        defaults: {
+            name:{value:""},
+            monzocreds: {type:"monzo-credentials",required:true},
+            requesttype:{value:"accounts"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "arrow-in.png",
+        label: function() {
+            return this.name||"monzo in";
+        }
+    });
+</script>
+<script data-template-name="monzo-in" type="text/x-red">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Node Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-monzocreds"><i class="fa fa-user"></i> <span >Tokens</span></label>
+        <input type="text" id="node-input-monzocreds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-requesttype"><i class="icon-tag"></i> Request</label>
+        <select id="node-input-requesttype">
+            <option value="accounts">all accounts</>
+                <option value="balances">all balances</>
+            <option value="pots">all pots</>
+        </select>
+    </div>
+</script>
+<script data-help-name="monzo-in" type="text/x-red">
+    <p>This is a monzo input node that will allow a connection to the monzo bank API to retrieve information.</p>
+</script>
