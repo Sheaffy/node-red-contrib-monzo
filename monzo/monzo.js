@@ -15,7 +15,7 @@ module.exports = function(RED) {
         this.cronjob = null;
         var node = this;
 
-        this.cronjob = new CronJob('* */60 * * * *', function() {
+        this.cronjob = new CronJob('1 */60 * * * *', function() {
 
             const Monzo = require('monzo-js');
             var creds = RED.nodes.getCredentials(node.id);
