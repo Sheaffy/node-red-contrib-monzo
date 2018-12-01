@@ -17,7 +17,7 @@
     <div class="form-row" id="node-config-monzo-refresh-type"></div>
 </script>
 <script data-help-name="monzo-credentials" type="text/x-red">
-    <p><h3>Path A</h3>For instant testing you will find a temporary access token when logged into the monzo developer website on the playground page. you can enter this directly into the access token field.<br><a href="https://developers.monzo.com/api/playground" target="_blank">https://developers.monzo.com/api/playground</a><br><br><h3>Path B</h3>To set up perminant access you must create a Monzo API client at<br><a href="https://developers.monzo.com/apps/home" target="_blank">https://developers.monzo.com/apps/home</a><br>, so that you can get a Client ID and a API Secret.<br>Please note you *MUST* set the redirect url to <br><b>protocol+"//"+hostname+":"+port+"/monzo-creds</b><br><br>For Example: http://localhost:1880/monzo-creds<br><br>If you do not do this, you will <b>Not</b> be able to authenticate with your client.</p>
+    <p><h3>Path A</h3>For instant testing you will find a temporary access token when logged into the monzo developer website on the playground page. you can enter this directly into the access token field.<br><a href="https://developers.monzo.com/api/playground" target="_blank">https://developers.monzo.com/api/playground</a><br><br><h3>Path B</h3>To set up permanent access you must create a Monzo API client at<br><a href="https://developers.monzo.com/apps/home" target="_blank">https://developers.monzo.com/apps/home</a><br> so that you can get a Client ID and a API Secret.<br>Please note you *MUST* set the redirect url to <br><b>protocol+"//"+hostname+":"+port+"/monzo-creds</b><br><br>For Example: http://localhost:1880/monzo-creds<br><br>If you do not do this, you will <b>Not</b> be able to authenticate with your client.</p>
 </script>
 <script type="text/javascript">
     (function() {
@@ -42,24 +42,32 @@
 
             function showMonzoAuthStart() {
 
-
+                /*
+                Checking if refresh token exists.
+                 */
                 $.getJSON('/credentials/monzo-credentials/'+monzoConfigNodeId,function(data) {
                     if(data.token){
                         if (data.refreshtoken) {
-                            $('#node-config-monzo-refresh-type').html("*This access token will refresh, only if node-red stays running*")
+                            $('#node-config-monzo-refresh-type').html("<center>(Token Refresh ON)</center><br><center>*This access token will refresh, only if node-red stays running*</center>")
                         } else {
-                           $('#node-config-monzo-refresh-type').html("*This access token will not automatically refresh*")
+                           $('#node-config-monzo-refresh-type').html("<center>(Token Refresh OFF)</center><br><center>*This access token will not automatically refresh*</center>")
                         }
                     }
                 })
 
+                /*
+                Setting ports to take into account all variations
+                 */
+                var portstring = "";
+                if(location.port == "80" || location.port == undefined){
+                    portstring = "";
+                } else {
+                    portstring = ":"+location.port;
+                }
 
-
-                
-                var callback = encodeURIComponent(location.protocol+"//"+location.hostname+":"+location.port+"/monzo-creds");
-                //$("#node-config-dialog-ok").button("disable");
-
+                var callback = encodeURIComponent(location.protocol+"//"+location.hostname+portstring+"/monzo-creds");
                 var token = $('#node-config-input-token').val();
+
                 var button_txt = "";
                 if(token){
                     button_txt = "Re-Authorise With Monzo";
@@ -69,6 +77,9 @@
 
                 $("#node-config-monzo-row").html('<div style="text-align: center; margin-top: 20px; "><span class="editor-button" id="node-config-monzo-start" >'+button_txt+'</span></div>');
 
+                /*
+                Capturing click event on the start button to initialise authentication process
+                 */
                 $("#node-config-monzo-start").click(function() {
 
 
@@ -77,18 +88,17 @@
                         $('#node-config-input-token').val("");
                     }
 
-
                     var client_id = $('#node-config-input-client_id').val();
                     var secret = $('#node-config-input-secret').val();
 
                     if(client_id != "" && secret != ""){
 
-
-
-
+                            /*
+                            In order to have correct clientid and secret upon return, we must set them in advance.
+                             */
                             var dataa = {"nodeid":monzoConfigNodeId,"clientid":client_id,"secret":secret};
                             $.ajax({
-                               url: location.protocol+"//"+location.hostname+":"+location.port+"/monzo-creds-set",
+                               url: "/monzo-creds-set",
                                data: dataa,
                                error: function() {
                                   console.log("error");
@@ -96,6 +106,9 @@
                                success: function(data) {
                                     if(data == "success"){
 
+                                        /*
+                                        If set credentials succesfully, now open popup window with Oauth process
+                                         */
                                         window.open('https://auth.monzo.com/?client_id=oauth2client_00009dDNSWSZMEdHjniFGL&redirect_uri='+callback+'&response_type=code&state='+monzoConfigNodeId+'', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
 
                                         $("#node-config-dialog-ok").button("disable");
@@ -106,20 +119,22 @@
                                type: 'GET'
                             });
                     } else {
+                        //If no client or secret do not run auth proccess, display they need to fill it out.
                         $("#node-config-monzo-result-row").html('Please enter in your "clientid" and "secret"');
                     }
 
                 });
             }
 
+            
             function updateMonzoToken(token, refresh_token) {
                 $("#node-config-input-token").val(token);
                 if(token){
-                    $("#node-config-monzo-result-row").html('Successfully retrived access token.');
+                    $("#node-config-monzo-result-row").html('<span style="color:green">Successfully retrived access token.</span>');
                 }
 
                 if(token && refresh_token){
-                    $("#node-config-monzo-result-row").html('Successfully retrived access token and refresh token');
+                    $("#node-config-monzo-result-row").html('<span style="color:green">Successfully retrived access token and refresh token</span>');
                 }
                 
             }
@@ -136,7 +151,9 @@
                 })
             }
 
-
+            /*
+            initialise auth start for credential node
+             */
             showMonzoAuthStart();
 
 
