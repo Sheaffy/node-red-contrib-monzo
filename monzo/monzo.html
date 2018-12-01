@@ -45,15 +45,35 @@
                 /*
                 Checking if refresh token exists.
                  */
-                $.getJSON('/credentials/monzo-credentials/'+monzoConfigNodeId,function(data) {
-                    if(data.token){
-                        if (data.refreshtoken) {
-                            $('#node-config-monzo-refresh-type').html("<center>(Token Refresh ON)</center><br><center>*This access token will refresh, only if node-red stays running*</center>")
-                        } else {
-                           $('#node-config-monzo-refresh-type').html("<center>(Token Refresh OFF)</center><br><center>*This access token will not automatically refresh*</center>")
+                var headers_dat = "";
+                if (localStorage.getItem("auth-tokens") !== null) {
+                    // we have auth we need to set this on the poll request
+                    tokens = JSON.parse(localStorage.getItem("auth-tokens"))
+                    headers_dat = "Bearer "+tokens.access_token
+                    
+                }
+                
+                $.ajax({
+                   url: '/credentials/monzo-credentials/'+monzoConfigNodeId,
+                   beforeSend: function(request) {
+                        if(headers_dat != ""){
+                            request.setRequestHeader("Authorization", headers_dat);
                         }
-                    }
-                })
+                      },
+                   error: function() {
+                      console.log("error");
+                   },
+                   success: function(data) {
+                       if(data.token){
+                            if (data.refreshtoken) {
+                                $('#node-config-monzo-refresh-type').html("<center>(Token Refresh ON)</center><br><center>*This access token will refresh, only if node-red stays running*</center>")
+                            } else {
+                               $('#node-config-monzo-refresh-type').html("<center>(Token Refresh OFF)</center><br><center>*This access token will not automatically refresh*</center>")
+                            }
+                        }
+                   },
+                   type: 'GET'
+                });
 
                 /*
                 Setting ports to take into account all variations
@@ -140,15 +160,35 @@
             }
 
             function pollMonzoCredentials(e) {
-                $.getJSON('/credentials/monzo-credentials/'+monzoConfigNodeId,function(data) {
-                    if (data.token) {
-                        updateMonzoToken(data.token, data.refreshtoken);
-                        monzoConfigNodeIntervalId = null;
-                        $("#node-config-dialog-ok").button("enable");
-                    } else {
-                        monzoConfigNodeIntervalId = window.setTimeout(pollMonzoCredentials,2000);
-                    }
-                })
+                var headers_dat = "";
+                if (localStorage.getItem("auth-tokens") !== null) {
+                    // we have auth we need to set this on the poll request
+                    tokens = JSON.parse(localStorage.getItem("auth-tokens"))
+                    headers_dat = "Bearer "+tokens.access_token
+                    
+                }
+
+                $.ajax({
+                   url: '/credentials/monzo-credentials/'+monzoConfigNodeId,
+                   beforeSend: function(request) {
+                        if(headers_dat != ""){
+                            request.setRequestHeader("Authorization", headers_dat);
+                        }
+                      },
+                   error: function() {
+                      console.log("error");
+                   },
+                   success: function(data) {
+                        if (data.token) {
+                            updateMonzoToken(data.token, data.refreshtoken);
+                            monzoConfigNodeIntervalId = null;
+                            $("#node-config-dialog-ok").button("enable");
+                        } else {
+                            monzoConfigNodeIntervalId = window.setTimeout(pollMonzoCredentials,2000);
+                        }
+                   },
+                   type: 'GET'
+                });
             }
 
             /*
