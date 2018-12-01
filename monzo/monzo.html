@@ -109,7 +109,7 @@
                                         /*
                                         If set credentials succesfully, now open popup window with Oauth process
                                          */
-                                        window.open('https://auth.monzo.com/?client_id=oauth2client_00009dDNSWSZMEdHjniFGL&redirect_uri='+callback+'&response_type=code&state='+monzoConfigNodeId+'', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+                                        window.open('https://auth.monzo.com/?client_id='+client_id+'&redirect_uri='+callback+'&response_type=code&state='+monzoConfigNodeId+'', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
 
                                         $("#node-config-dialog-ok").button("disable");
                                         monzoConfigNodeIntervalId = window.setTimeout(pollMonzoCredentials,2000);
