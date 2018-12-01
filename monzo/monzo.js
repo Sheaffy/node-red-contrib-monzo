@@ -14,7 +14,7 @@ module.exports = function(RED) {
         /*
         Set up cron job and add it to node object so it can be stopped upon node close.
          */
-        this.cronjob = new CronJob('1 */60 * * * *', function() { // Cron Job Once Per Hour, This Needs to be vairable later on.
+        this.cronjob = new CronJob('1 */60 * * * *', function() { // TODO Cron Job Once Per Hour, This Needs to be vairable later on.
             const Monzo = require('monzo-js');
             var creds = RED.nodes.getCredentials(node.id);
             var secret = creds.secret;

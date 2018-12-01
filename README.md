@@ -24,7 +24,7 @@ To get your access token you will need to go to "https://developers.monzo.com/ap
 
 ### <a name="permtoken"></a> Getting your permanent token
 In order to have permanent authentication, this will require you to set up a monzo API client see "https://developers.monzo.com/apps/new", so that you can have a clientID and a API secret. (please note, the client will need Confidential set to TRUE, otherwise it will not automatically refresh).
-If node-red is left not running, the system will lose its window to refresh its token, meaning the next time you run node-red, your token will be invalid. You will need to re-authorize.
+If node-red is left not running, the system will lose its window to refresh its token, meaning the next time you run node-red, your token will be invalid. You will need to re-authorise.
 
 ### <a name="usage"></a> How to use this node.
 After you have placed the node, enter its configuration you can either add a temporary token or a clientID and API secret. If you added the clientID and secret you will now need to go through the authentication process by clicking "Authenticate With Monzo". Once a access token is added, select the request type you would like to do. To make a request simply inject anything into the input node to get a response from the output node.
