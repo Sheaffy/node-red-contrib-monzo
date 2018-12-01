@@ -90,9 +90,9 @@
 
                 var button_txt = "";
                 if(token){
-                    button_txt = "Re-Authorise With Monzo";
+                    button_txt = "Re-Authorize With Monzo";
                 } else {
-                    button_txt = "Authorise With Monzo";
+                    button_txt = "Authorize With Monzo";
                 }
 
                 $("#node-config-monzo-row").html('<div style="text-align: center; margin-top: 20px; "><span class="editor-button" id="node-config-monzo-start" >'+button_txt+'</span></div>');
@@ -150,11 +150,11 @@
             function updateMonzoToken(token, refresh_token) {
                 $("#node-config-input-token").val(token);
                 if(token){
-                    $("#node-config-monzo-result-row").html('<span style="color:green">Successfully retrived access token.</span>');
+                    $("#node-config-monzo-result-row").html('<span style="color:green">Successfully retrieved access token.</span>');
                 }
 
                 if(token && refresh_token){
-                    $("#node-config-monzo-result-row").html('<span style="color:green">Successfully retrived access token and refresh token</span>');
+                    $("#node-config-monzo-result-row").html('<span style="color:green">Successfully retrieved access token and refresh token</span>');
                 }
                 
             }
@@ -226,7 +226,7 @@
         <input type="text" id="node-input-name" placeholder="Node Name">
     </div>
     <div class="form-row">
-        <label for="node-input-monzocreds"><i class="fa fa-user"></i> <span >Tokens</span></label>
+        <label for="node-input-monzocreds"><i class="fa fa-user"></i> <span > Tokens</span></label>
         <input type="text" id="node-input-monzocreds">
     </div>
     <div class="form-row">

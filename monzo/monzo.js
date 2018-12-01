@@ -84,7 +84,7 @@ module.exports = function(RED) {
         var secret = req.query.secret;
         var clientid = req.query.clientid;
         var nodeid = req.query.nodeid;
-        
+
         if (secret != "" && clientid != "" && nodeid != "") {
             var credentials = {
                 client_id: clientid,
@@ -230,7 +230,7 @@ module.exports = function(RED) {
                             });
                         }
                     }).catch(error => {
-                        node.error("your token is not authenticated.", msg);
+                        node.error("your token is not authenticated. -> "+error, msg);
                         this.status({
                             fill: "red",
                             shape: "dot",
@@ -255,7 +255,7 @@ module.exports = function(RED) {
                             });
                         }
                     }).catch(error => {
-                        node.error("your token is not authenticated.", msg);
+                        node.error("your token is not authenticated. -> "+error, msg);
                         this.status({
                             fill: "red",
                             shape: "dot",
@@ -283,7 +283,7 @@ module.exports = function(RED) {
                             });
                         }
                     }).catch(error => {
-                        node.error("your token is not authenticated.", msg);
+                        node.error("your token is not authenticated. -> "+error, msg);
                         this.status({
                             fill: "red",
                             shape: "dot",
