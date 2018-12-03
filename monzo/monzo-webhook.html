@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    RED.nodes.registerType('monzo-live',{
+        category: 'banking',
+        color: '#F3AAA9',
+        defaults: {
+            name:{value:""},
+            monzocreds: {type:"monzo-credentials",required:true},
+            accountid:{value:""}
+        },
+        outputs:1,
+        icon: "arrow-in.png",
+        label: function() {
+            return this.name||"monzo live";
+        }
+    });
+</script>
+<script data-template-name="monzo-live" type="text/x-red">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Node Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-monzocreds"><i class="fa fa-user"></i> <span > Tokens</span></label>
+        <input type="text" id="node-input-monzocreds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-accountid"><i class="icon-tag"></i> AccountID</label>
+        <input type="text" id="node-input-accountid" placeholder="Node Name">
+    </div>
+</script>
+<script data-help-name="monzo-live" type="text/x-red">
+    <p>This is a monzo node that will receive live transations and notifications from monzo</p>
+</script>

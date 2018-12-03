@@ -20,7 +20,8 @@
     },
     "node-red": {
         "nodes": {
-            "monzo-in": "monzo/monzo.js"
+            "monzo-in": "monzo/monzo.js",
+            "monzo-live":"monzo/monzo-webhook.js"
         }
     }
 }
