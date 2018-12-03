@@ -2,6 +2,8 @@
 
 ### This is a node-red package that will allow you to retrive information from monzo, using your access token.
 
+Please Note - Monzo is a bank that is currently only available for UK residents.
+
 This is an easy to use node, all you have to do is input a access token and select what information you want under the request dropdown.
 
 
