@@ -79,7 +79,7 @@
                 Setting ports to take into account all variations
                  */
                 var portstring = "";
-                if(location.port == "80" || location.port == undefined){
+                if(location.port == "80" || location.port == undefined || location.port == "443"){
                     portstring = "";
                 } else {
                     portstring = ":"+location.port;
@@ -203,6 +203,7 @@
 
 })();
 </script>
+
 <script type="text/javascript">
     RED.nodes.registerType('monzo-in',{
         category: 'banking',
@@ -217,6 +218,9 @@
         icon: "arrow-in.png",
         label: function() {
             return this.name||"monzo in";
+        },
+        paletteLabel:function(){
+            return "monzo in";
         }
     });
 </script>
@@ -233,7 +237,7 @@
         <label for="node-input-requesttype"><i class="icon-tag"></i> Request</label>
         <select id="node-input-requesttype">
             <option value="accounts">all accounts</>
-                <option value="balances">all balances</>
+            <option value="balances">all balances</>
             <option value="pots">all pots</>
         </select>
     </div>

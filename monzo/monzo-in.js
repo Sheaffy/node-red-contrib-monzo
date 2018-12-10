@@ -14,14 +14,14 @@ module.exports = function(RED) {
         /*
         Set up cron job and add it to node object so it can be stopped upon node close.
          */
-        this.cronjob = new CronJob('1 */60 * * * *', function() { // TODO Cron Job Once Per Hour, This Needs to be vairable later on.
+        this.cronjob = new CronJob('1 */60 * * * *', function() { // Cron Job Once Per Hour, This Needs to be vairable later on.
             const Monzo = require('monzo-js');
             var creds = RED.nodes.getCredentials(node.id);
             var secret = creds.secret;
             var clientid = creds.client_id;
             var refreshtoken = creds.refreshtoken;
             if (refreshtoken != "" && refreshtoken != undefined) {
-                //console.log("[monzo] - refreshing token");
+                console.log("[monzo] - refreshing token");
 
                 /*
                 Using monzojs, refresh the token and retreive the access_token and refresh_token
@@ -31,7 +31,7 @@ module.exports = function(RED) {
                     refresh_token
                 }) => {
                     if (access_token) {
-                        //console.log("[monzo] - refresh complete");
+                        console.log("[monzo] - refresh complete");
                         var credentials = {
                             client_id: clientid,
                             secret: secret,
@@ -271,6 +271,7 @@ module.exports = function(RED) {
                         for (const [id, pot] of pots) {
                             msg.payload = {
                                 "response": {
+                                    "pot_id": pot.id,
                                     "pot_name": pot.name,
                                     "pot_balance": pot.balance
                                 }
