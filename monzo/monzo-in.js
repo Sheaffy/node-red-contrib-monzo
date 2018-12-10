@@ -116,9 +116,7 @@ module.exports = function(RED) {
         opts.method = "POST";
         opts.headers = {};
         opts.maxRedirects = 21;
-        
-
-
+    
         var protocol = "";
         if (req.connection.encrypted) {
             protocol = "https";
@@ -126,8 +124,6 @@ module.exports = function(RED) {
             protocol = "http";
         }
 
-        console.log(monzocreds.redirect_uri);
-        
         var auth_token = req.query.code;
         var postvars = {
             grant_type: "authorization_code",
