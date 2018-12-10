@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-monzo",
-    "version": "1.1.4",
+    "version": "1.1.6",
     "description": "This is a wrapper that will allow a connection to the monzo bank API for use within node-red",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,8 +20,7 @@
     },
     "node-red": {
         "nodes": {
-            "monzo-in": "monzo/monzo.js",
-            "monzo-live":"monzo/monzo-webhook.js"
+            "monzo-in": "monzo/monzo-in.js",
         }
     }
 }

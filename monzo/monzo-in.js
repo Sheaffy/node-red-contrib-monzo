@@ -271,6 +271,7 @@ module.exports = function(RED) {
                         for (const [id, pot] of pots) {
                             msg.payload = {
                                 "response": {
+                                    "pot_id": pot.id,
                                     "pot_name": pot.name,
                                     "pot_balance": pot.balance
                                 }
