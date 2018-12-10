@@ -116,7 +116,7 @@
                             /*
                             In order to have correct clientid and secret upon return, we must set them in advance.
                              */
-                            var dataa = {"nodeid":monzoConfigNodeId,"clientid":client_id,"secret":secret};
+                            var dataa = {"nodeid":monzoConfigNodeId,"clientid":client_id,"secret":secret, "redirect":(location.protocol+"//"+location.hostname+portstring+"/monzo-creds")};
                             $.ajax({
                                url: "/monzo-creds-set",
                                data: dataa,

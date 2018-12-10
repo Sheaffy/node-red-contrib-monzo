@@ -73,6 +73,9 @@ module.exports = function(RED) {
             },
             refreshtoken: {
                 type: "text"
+            },
+            redirect_uri:{
+                type: "text"
             }
         }
     });
@@ -84,11 +87,13 @@ module.exports = function(RED) {
         var secret = req.query.secret;
         var clientid = req.query.clientid;
         var nodeid = req.query.nodeid;
+        var redirect = req.query.redirect;
 
         if (secret != "" && clientid != "" && nodeid != "") {
             var credentials = {
                 client_id: clientid,
                 secret: secret,
+                redirect_uri:redirect
             };
             RED.nodes.addCredentials(nodeid, credentials);
             res.send("success");
@@ -112,19 +117,23 @@ module.exports = function(RED) {
         opts.headers = {};
         opts.maxRedirects = 21;
         
+
+
         var protocol = "";
         if (req.connection.encrypted) {
             protocol = "https";
         } else {
             protocol = "http";
         }
+
+        console.log(monzocreds.redirect_uri);
         
         var auth_token = req.query.code;
         var postvars = {
             grant_type: "authorization_code",
             client_id: monzocreds.client_id,
             client_secret: monzocreds.secret,
-            redirect_uri: protocol + "://" + req.get('host') + "/monzo-creds",
+            redirect_uri: monzocreds.redirect_uri,
             code: auth_token
         }
         opts.form = postvars;
@@ -215,7 +224,7 @@ module.exports = function(RED) {
                 const monzo = new Monzo(monzocredentials.token);
                 /*
                 Accounts request
-                 */
+                */
                 if (this.requesttype == "accounts") {
                     monzo.accounts.all().then(accounts => {
                         for (const [id, acc] of accounts) {
@@ -240,7 +249,7 @@ module.exports = function(RED) {
                 }
                 /*
                 Balances request
-                 */
+                */
                 if (this.requesttype == "balances") {
                     monzo.accounts.all().then(accounts => {
                         for (const [id, acc] of accounts) {
