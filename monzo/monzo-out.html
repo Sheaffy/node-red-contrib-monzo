@@ -1,0 +1,89 @@
+<script type="text/javascript">
+    RED.nodes.registerType('monzo-out',{
+        category: 'banking',
+        color: '#F3AAA9',
+        defaults: {
+            name:{value:""},
+            monzocreds: {type:"monzo-credentials",required:true},
+            accountid:{value:""},
+            url:{value:""},
+            requesttype:{value:""},
+            potid:{value:""},
+            amount:{value:0},
+        },
+        inputs:1,
+        outputs:1,
+        align: 'right',
+        icon: "arrow-in.png",
+        label: function() {
+            return this.name||"monzo out";
+        },
+        paletteLabel:function(){
+            return "monzo out";
+        },
+         oneditprepare: function() {
+
+            $('#node-input-requesttype').on("change", function(e){
+
+                $('.hidden-row-item').hide();
+
+                var val = $(this).val();
+                if(val == "deposit-pot" || val == "withdraw-pot"){
+                    $('.amount-row').show();
+                    $('.potid-row').show();
+                }
+
+            });
+
+           
+         }
+    });
+</script>
+<script data-template-name="monzo-out" type="text/x-red">
+    <input class="urlInput" type="hidden" id="node-input-url">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Node Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-monzocreds"><i class="fa fa-user" style="width:14px"></i> <span > Auth</span></label>
+        <input type="text" id="node-input-monzocreds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-accountid"><i class="icon-tag"></i> AccountID</label>
+        <input type="text" id="node-input-accountid" placeholder="Your Account ID">
+    </div>
+    <div class="form-row">
+        <label for="node-input-requesttype"><i class="icon-tag"></i> Type</label>
+        <select id="node-input-requesttype">
+            <option value="deposit-pot">pot deposit</option>
+            <option value="withdraw-pot">pot withdraw</option>
+        </select>
+    </div>
+    <div class="form-row potid-row hidden-row-item" style="display:none;">
+        <label for="node-input-potid"><i class="icon-tag"></i> Pot ID</label>
+        <input type="text" id="node-input-potid" placeholder="Pot ID">
+    </div>
+    <div class="form-row amount-row hidden-row-item" style="display:none;">
+        <label for="node-input-amount"><i class="icon-tag"></i> Amount</label>
+        <input type="number" id="node-input-amount" placeholder="Node Name">
+    </div>
+    You dont have to input data here, you can set the variables dynamically in the msg. See node help for more<br><br>
+
+</script>
+<script data-help-name="monzo-out" type="text/x-red">
+    <p>This is a monzo node that will send monzo commands to make changes with your account. for example depositing money into a pot.
+   </p>
+   <p>
+     You can either set the config manually in the node or use the msg object to dynamically send commands.<br><br>
+    Here are the posibilities.<br>
+    <ul>
+    <li>msg.accountid</li>
+    <li>msg.requesttype</li>
+        <ul><li>deposit-pot</li><li>withdraw-pot</li></ul>
+    <li>msg.potid</li>
+    <li>msg.amount</li>
+    </ul><br>
+    Please note, if you have set the msg object variables as seen above, they will override any settings in the node.
+   </p>
+</script>

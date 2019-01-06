@@ -39,6 +39,8 @@ module.exports = function(RED) {
                             refreshtoken: refresh_token
                         };
                         RED.nodes.addCredentials(node.id, credentials);
+                    } else {
+                        console.log("[monzo] - refresh failed");
                     }
                 }).catch(error => {
                     //console.log("[monzo] - refresh failed, needs reauthenticating");
