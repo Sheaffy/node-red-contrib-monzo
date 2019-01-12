@@ -16,6 +16,8 @@ This is an easy to use node, all you have to do is input a access token and sele
 		- [Capabilitys](#incap)
 	- [Monzo-out](#monzoout)
 		- [Capabilitys](#outcap)
+	- [Monzo-hook](#monzohook)
+		- [Capabilitys](#hookcap)
 
 
 
@@ -55,3 +57,10 @@ This node can retreive three kinds of information from your monzo account.
 - Pot Deposit
 - Pot Withdraw
 - Create Feed Item (Planned)
+
+### <a name="monzohook"></a> Monzo-hook
+Monzo Hook is a node that is used to manage and control webhooks for monzo, it also sets up automatic hook urls and receives the notifications which are then sent out of the node.
+
+##### <a name="hookcap"></a> Capabilitys
+This node can retreive notifcations from registered webhooks on monzo for live notifications, it can also set up remote url hooks if you would like to receive the webhook notifications elsewhere.
+

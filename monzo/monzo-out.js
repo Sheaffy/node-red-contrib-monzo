@@ -114,16 +114,25 @@ module.exports = function(RED) {
                         opts.form = postvars;
                         request(opts, function(err, ress, body) {
                             if (err) {
-                                node.error(err, msg);
-                                this.status({
+                                node.error(err);
+                                node.status({
                                     fill: "red",
                                     shape: "dot",
                                     text: "fail"
                                 });
                             } else {
                                 var bodyObject = JSON.parse(body);
+                                //console.log(bodyObject);
                                 if (!bodyObject.id) {
-                                    node.error(bodyObject, msg);
+
+                                    node.status({
+                                        fill: "red",
+                                        shape: "dot",
+                                        text: "fail"
+                                    });
+
+                                    node.error(bodyObject);
+                                    
                                 } else {
                                     //Complete success, generate new dedupe
                                     currentDeDupe = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -138,7 +147,7 @@ module.exports = function(RED) {
                             }
                         });
                     } else {
-                        this.status({
+                        node.status({
                             fill: "red",
                             shape: "dot",
                             text: "missing arguments"
@@ -146,7 +155,7 @@ module.exports = function(RED) {
                         node.error("missing arguments", msg);
                     }
                 } else {
-                	this.status({
+                	node.status({
 		                    fill: "red",
 		                    shape: "dot",
 		                    text: "no token"

@@ -1,0 +1,160 @@
+<script type="text/javascript">
+
+
+    function get_monzo_hooks(){
+
+        var headers_dat = "";
+        if (localStorage.getItem("auth-tokens") !== null) {
+            // we have auth we need to set this on the poll request
+            tokens = JSON.parse(localStorage.getItem("auth-tokens"))
+            headers_dat = "Bearer "+tokens.access_token
+        }
+
+
+        $.ajax({
+                   url: "/monzo-get-hooks",
+                   beforeSend: function(request) {
+                        if(headers_dat != ""){
+                            request.setRequestHeader("Authorization", headers_dat);
+                        }
+                      },
+                   error: function() {
+                      console.log("error");
+                   },
+                   success: function(data) {
+                    if(data != "[]"){
+                        datajson = JSON.parse(data);
+                        //empty the list
+                        $('.webhookhook-list').html("");
+
+                        //go through hooks and add them in.
+                        for (var i = 0; i < datajson.length; i++) {
+                               var outputstr = document.createElement("div");
+                                $(outputstr).css("border", "1px solid");
+                                $(outputstr).css("margin-top", "10px");
+                                $(outputstr).addClass(datajson[i][0]);
+                                var idobj = document.createElement("div");
+                                var deletebtn = document.createElement("button");
+                                $(deletebtn).html("Remove");
+                                $(deletebtn).attr("hookid", datajson[i][0]);
+                                $(deletebtn).click(function(){
+                                    var clickbtn = this;
+                                    $.ajax({
+                                       url: "/monzo-delete-hook/"+$(this).attr("hookid"),
+                                       beforeSend: function(request) {
+                                        if(headers_dat != ""){
+                                            request.setRequestHeader("Authorization", headers_dat);
+                                        }
+                                      },
+                                       error: function() {
+                                          console.log("error");
+                                       },
+                                       success: function(dataa) {
+                                            if(dataa == "deleted"){
+                                                $(clickbtn).parent().remove();
+                                            }
+                                       },
+                                       type: 'GET'
+                                    });
+
+                                });
+                                $(idobj).append(datajson[i][0] +"<br>"+ datajson[i][1]._webhook.url);
+                                $(idobj).append(deletebtn);
+
+                            $(outputstr).append(idobj);
+                            $(outputstr).append(deletebtn);
+                            $('.webhookhook-list').append(outputstr);
+                        }
+                    } else {
+                        $('.webhookhook-list').html("No webhooks setup.");
+                    }
+                    
+                   },
+                   type: 'GET'
+                });
+    }
+
+    RED.nodes.registerType('monzo-hook',{
+        category: 'banking',
+        color: '#F3AAA9',
+        defaults: {
+            name:{value:""},
+            monzocreds: {type:"monzo-credentials",required:true},
+            accountid:{value:""},
+            url:{value:""},
+            hooktype:{value:"local"}
+        },
+        outputs:1,
+        icon: "monzo.png",
+        label: function() {
+            return this.name||"monzo hook";
+        },
+         oneditprepare: function() {
+
+            var portstring = "";
+            if(location.port == "80" || location.port == undefined || location.port == "443" || location.port == ""){
+                portstring = "";
+            } else {
+                portstring = ":"+location.port;
+            }
+            var url = location.protocol+"//"+location.hostname+portstring;
+
+            if($('#node-input-hooktype').val() == "local"){
+                $('.urlInput').val(url);
+            }
+           
+
+
+            $('#node-input-hooktype').on("change", function(){
+                if($('#node-input-hooktype').val() == "remote"){
+                    $('.urlinputcontainer').show();
+                } else {
+                    $('.urlinputcontainer').hide();
+                    $('.urlInput').val(url);
+                }
+            });
+
+            
+            get_monzo_hooks();
+                
+
+         }
+    });
+</script>
+<script data-template-name="monzo-hook" type="text/x-red">
+   
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Node Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-monzocreds"><i class="fa fa-user" style="width:14px"></i> <span > Auth</span></label>
+        <input type="text" id="node-input-monzocreds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-accountid"><i class="icon-tag"></i> AccountID</label>
+        <input type="text" id="node-input-accountid" placeholder="Account ID">
+    </div>
+    <div class="form-row">
+        <label for="node-input-hooktype"><i class="icon-tag"></i> Webhook type</label>
+        <select id="node-input-hooktype">
+            <option value="local" selected>local</option>
+            <option value="remote">remote</option>
+        </select>
+    </div>
+    <div class="form-row urlinputcontainer">
+        <label for="node-input-url"><i class="icon-tag"></i> Webhook url</label>
+        <input type="text" class="urlInput" id="node-input-url" placeholder="Url">
+    </div>
+
+    <br>
+    <div style="padding:10px;border:1px solid">
+        <span>Live Hooks</span>
+        <div class="webhookhook-list"></div>
+    </div>
+    
+</script>
+<script data-help-name="monzo-hook" type="text/x-red">
+    <p>This is a monzo node that will receive live transations and notifications from monzo using webhooks</p>
+    <p>When the webhook is in remote mode, the node itself will not output live transactions. However when in local, it will automatically output the received notifications directly out of the node.(Local Mode will only work if the node-red installation is public to the internet.</p>
+</script>

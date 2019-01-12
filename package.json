@@ -21,7 +21,8 @@
     "node-red": {
         "nodes": {
             "monzo-in": "monzo/monzo-in.js",
-            "monzo-out": "monzo/monzo-out.js"
+            "monzo-out": "monzo/monzo-out.js",
+            "monzo-webhook": "monzo/monzo-webhook.js"
         }
     }
 }
