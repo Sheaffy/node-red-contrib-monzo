@@ -89,7 +89,7 @@ module.exports = function(RED) {
 
                 const Monzo = require('monzo-js');
                 const monzo = new Monzo(monzocredentials.token);
-                
+
                 if (config.accountid && config.url != undefined) {
                     monzo.accounts.find(config.accountid).then(account => {
                         account.webhooks.all().then(webhooks => {
@@ -134,10 +134,15 @@ module.exports = function(RED) {
                                 });
                             }
                         }).catch(error => {
-                            console.log(error)
+                            //console.log(error);
+                            this.status({
+	                            fill: "red",
+	                            shape: "dot",
+	                            text: "no auth"
+                        	});
                         });
                     }).catch(error => {
-                        console.log(error)
+                        //console.log(error)
                         this.status({
                             fill: "red",
                             shape: "dot",
