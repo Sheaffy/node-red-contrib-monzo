@@ -34,6 +34,7 @@
                                 $(outputstr).css("margin-top", "10px");
                                 $(outputstr).addClass(datajson[i][0]);
                                 var idobj = document.createElement("div");
+                                $(idobj).css("padding", "5px");
                                 var deletebtn = document.createElement("button");
                                 $(deletebtn).html("Remove");
                                 $(deletebtn).attr("hookid", datajson[i][0]);
@@ -58,7 +59,7 @@
                                     });
 
                                 });
-                                $(idobj).append(datajson[i][0] +"<br>"+ datajson[i][1]._webhook.url);
+                                $(idobj).append("id: "+datajson[i][0] +"<br>url: "+ datajson[i][1]._webhook.url);
                                 $(idobj).append(deletebtn);
 
                             $(outputstr).append(idobj);
@@ -136,7 +137,7 @@
         <input type="text" id="node-input-accountid" placeholder="Account ID">
     </div>
     <div class="form-row">
-        <label for="node-input-hooktype"><i class="icon-tag"></i> Webhook type</label>
+        <label for="node-input-hooktype"><i class="icon-tag"></i> Hook type</label>
         <select id="node-input-hooktype">
             <option value="local" selected>local</option>
             <option value="remote">remote</option>
@@ -149,12 +150,13 @@
 
     <br>
     <div style="padding:10px;border:1px solid">
-        <span>Live Hooks</span>
+        <span>Active Webhooks</span>
         <div class="webhookhook-list"></div>
     </div>
     
 </script>
 <script data-help-name="monzo-hook" type="text/x-red">
-    <p>This is a monzo node that will receive live transations and notifications from monzo using webhooks</p>
-    <p>When the webhook is in remote mode, the node itself will not output live transactions. However when in local, it will automatically output the received notifications directly out of the node.(Local Mode will only work if the node-red installation is public to the internet.</p>
+    <p>This is a monzo node that will receive live transactions and notifications from monzo using webhooks</p>
+    <p>When the webhook is in remote mode, the node itself will not output live transactions. However when in local, it will automatically output the received notifications directly out of the node.(Local Mode will only work if the node-red installation is public to the internet).</p>
+    <p>Please Note, In order to register new webhooks and see active webhooks, it requires authenticated credentials to be set on the node.</p>
 </script>

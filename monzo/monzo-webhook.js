@@ -1,7 +1,6 @@
 module.exports = function(RED) {
     "use strict";
     var request = require("request");
-    var querystring = require("querystring");
     /*
     Setup MonzoWebHook
      */
@@ -11,6 +10,27 @@ module.exports = function(RED) {
         this.monzoConfig = RED.nodes.getNode(config.monzocreds);
         var monzocredentials = RED.nodes.getCredentials(config.monzocreds);
 
+        //Set up the endpoint to receive "Local" webhook messages
+        RED.httpAdmin.post(('/monzo-webhook/' + node.id), function(req, res) {
+            const Monzo = require('monzo-js');
+            var monzocredentials_local = RED.nodes.getCredentials(config.monzocreds);
+            const monzo = new Monzo(monzocredentials_local.token);
+            try {
+                //console.log(req.body);
+                if (req.body != "{}") {
+                    var hookdata = req.body;
+                    var msg = {
+                        payload: hookdata
+                    };
+                    node.send(msg);
+                }
+            } catch (err) {
+                node.error(err);
+            }
+            res.end("done");
+        });
+
+        //Set up endpoint to allow you to retreive active webhooks within the admin (REQUIRES PERMISSIONS IF SET)
         RED.httpAdmin.get('/monzo-get-hooks', RED.auth.needsPermission('monzo-hook.read'), function(req, res) {
             const Monzo = require('monzo-js');
             var monzocredentials_local = RED.nodes.getCredentials(config.monzocreds);
@@ -33,29 +53,12 @@ module.exports = function(RED) {
             });
         });
 
-        RED.httpAdmin.post(('/monzo-webhook/' + node.id), function(req, res) {
-            const Monzo = require('monzo-js');
-            var monzocredentials_local = RED.nodes.getCredentials(config.monzocreds);
-            const monzo = new Monzo(monzocredentials_local.token);
-            try {
-                console.log(req.body);
-                if (req.body != "{}") {
-                    var hookdata = req.body;
-                    var msg = {
-                        payload: hookdata
-                    };
-                    node.send(msg);
-                }
-            } catch (err) {
-                node.error(err);
-            }
-            res.end("done");
-        });
-
+        //Set up endpoint to allow you to delete a webhook through the admin, (REQUIRES PERMISSIONS IF SET)
         RED.httpAdmin.get('/monzo-delete-hook/:id', RED.auth.needsPermission('monzo-hook.read'), function(req, res) {
             const Monzo = require('monzo-js');
             var monzocredentials_local = RED.nodes.getCredentials(config.monzocreds);
             const monzo = new Monzo(monzocredentials_local.token);
+
             var opts = {};
             opts.url = "https://api.monzo.com/webhooks/" + req.params.id;
             opts.timeout = 2000;
@@ -74,7 +77,7 @@ module.exports = function(RED) {
                 }
             });
         });
-        
+
         if (this.monzoConfig) {
             if (monzocredentials.token != "") {
                 // We have a token, lets first request all
@@ -83,8 +86,10 @@ module.exports = function(RED) {
                     shape: "dot",
                     text: "ready"
                 });
+
                 const Monzo = require('monzo-js');
                 const monzo = new Monzo(monzocredentials.token);
+                
                 if (config.accountid && config.url != undefined) {
                     monzo.accounts.find(config.accountid).then(account => {
                         account.webhooks.all().then(webhooks => {
@@ -160,10 +165,5 @@ module.exports = function(RED) {
      */
     RED.nodes.registerType("monzo-hook", MonzoWebHookNode, {
         //Any credentials go here
-        credentials: {
-            hook_id: {
-                type: "text"
-            }
-        }
     });
 }
