@@ -176,6 +176,8 @@ module.exports = function(RED) {
     function MonzoNodeIn(config) {
         RED.nodes.createNode(this, config);
         this.requesttype = config.requesttype;
+        this.potid = config.potid;
+        this.accountid = config.accountid;
         this.monzoConfig = RED.nodes.getNode(config.monzocreds);
         const Monzo = require('monzo-js');
         var node = this;
@@ -274,13 +276,14 @@ module.exports = function(RED) {
                 Pots request
                  */
                 if (this.requesttype == "pots") {
-                    monzo.pots.all().then(pots => {
-                        for (const [id, pot] of pots) {
+                    monzo.pots.all(this.accountid).then(pots => {
+                        for (const [id, pot] of pots) {    
                             msg.payload = {
                                 "response": {
                                     "pot_id": pot.id,
                                     "pot_name": pot.name,
-                                    "pot_balance": pot.balance
+                                    "pot_balance": pot.balance,
+                                    "pot_goal_amount": pot._pot.goal_amount
                                 }
                             };
                             node.send(msg);
@@ -290,6 +293,34 @@ module.exports = function(RED) {
                                 text: "ready"
                             });
                         }
+                    }).catch(error => {
+                        node.error("your token is not authenticated. -> "+error, msg);
+                        this.status({
+                            fill: "red",
+                            shape: "dot",
+                            text: "no auth"
+                        });
+                    });
+                }
+                /*
+                Pot request
+                 */
+                if (this.requesttype == "pot") {
+                    monzo.pots.find(this.potid, this.accountid).then(pot => {
+                            msg.payload = {
+                                "response": {
+                                    "pot_id": pot.id,
+                                    "pot_name": pot.name,
+                                    "pot_balance": pot.balance,
+                                    "pot_goal_amount": pot._pot.goal_amount
+                                }
+                            };
+                            node.send(msg);
+                            this.status({
+                                fill: "green",
+                                shape: "dot",
+                                text: "ready"
+                            });
                     }).catch(error => {
                         node.error("your token is not authenticated. -> "+error, msg);
                         this.status({
