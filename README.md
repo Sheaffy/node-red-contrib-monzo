@@ -34,6 +34,7 @@ To get your access token you will need to go to "https://developers.monzo.com/ap
 In order to have permanent authentication, this will require you to set up a monzo API client see "https://developers.monzo.com/apps/new", so that you can have a clientID and a API secret. (please note, the client will need Confidential set to TRUE, otherwise it will not automatically refresh).
 If node-red is left not running, the system will lose its window to refresh its token, meaning the next time you run node-red, your token will be invalid. You will need to re-authorise.
 
+##### Please note as of recently in order for your permanent token to work, in the authentication process, after this node has said successful authentication, You will get a notification on the monzo app that you will have to allow.
 
 
 
