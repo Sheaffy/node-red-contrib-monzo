@@ -4,14 +4,50 @@ module.exports = function(RED) {
     /*
     Setup MonzoWebHook
      */
+
+    RED.httpAdmin.post('/monzo-webhook/:nodeId', function(req,res) {
+        var nodeId = req.params.nodeId;
+        var node = RED.nodes.getNode(nodeId);
+        if (node) { 
+           // call the callback function you have added to the individual node instance.
+           node.WebhookCallback(req,res);
+        } else {
+           res.send(404).end();
+        }
+     });
+
+    //Set up endpoint to allow you to retreive active webhooks within the admin (REQUIRES PERMISSIONS IF SET)
+    RED.httpAdmin.get('/monzo-get-hooks/:nodeId', RED.auth.needsPermission('monzo-hook.read'), function(req, res){ 
+        var nodeId = req.params.nodeId;
+        var node = RED.nodes.getNode(nodeId);
+        if (node) { 
+           // call the callback function you have added to the individual node instance.
+           node.GetHooksCallback(req,res);
+        } else {
+           res.send(404).end();
+        }
+    });
+
+    //Set up endpoint to allow you to delete a webhook through the admin, (REQUIRES PERMISSIONS IF SET)
+    RED.httpAdmin.get('/monzo-delete-hook/:nodeId/:id', RED.auth.needsPermission('monzo-hook.read'), function(req, res){ 
+        var nodeId = req.params.nodeId;
+        var node = RED.nodes.getNode(nodeId);
+        if (node) { 
+           // call the callback function you have added to the individual node instance.
+           node.DeleteHookCallback(req,res);
+        } else {
+           res.send(404).end();
+        }
+    });
+
+
     function MonzoWebHookNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
         this.monzoConfig = RED.nodes.getNode(config.monzocreds);
         var monzocredentials = RED.nodes.getCredentials(config.monzocreds);
 
-        //Set up the endpoint to receive "Local" webhook messages
-        RED.httpAdmin.post(('/monzo-webhook/' + node.id), function(req, res) {
+        this.WebhookCallback = function WebhookCallback(req, res){            
             const Monzo = require('monzo-js');
             var monzocredentials_local = RED.nodes.getCredentials(config.monzocreds);
             const monzo = new Monzo(monzocredentials_local.token);
@@ -28,10 +64,9 @@ module.exports = function(RED) {
                 node.error(err);
             }
             res.end("done");
-        });
+        }
 
-        //Set up endpoint to allow you to retreive active webhooks within the admin (REQUIRES PERMISSIONS IF SET)
-        RED.httpAdmin.get('/monzo-get-hooks', RED.auth.needsPermission('monzo-hook.read'), function(req, res) {
+        this.GetHooksCallback = function GetHooksCallback(req, res) {
             const Monzo = require('monzo-js');
             var monzocredentials_local = RED.nodes.getCredentials(config.monzocreds);
             const monzo = new Monzo(monzocredentials_local.token);
@@ -51,10 +86,9 @@ module.exports = function(RED) {
                 res.send(error);
                 //console.log(error);
             });
-        });
+        }
 
-        //Set up endpoint to allow you to delete a webhook through the admin, (REQUIRES PERMISSIONS IF SET)
-        RED.httpAdmin.get('/monzo-delete-hook/:id', RED.auth.needsPermission('monzo-hook.read'), function(req, res) {
+        this.DeleteHookCallback = function DeleteHookCallback(req, res) {
             const Monzo = require('monzo-js');
             var monzocredentials_local = RED.nodes.getCredentials(config.monzocreds);
             const monzo = new Monzo(monzocredentials_local.token);
@@ -76,7 +110,7 @@ module.exports = function(RED) {
                     res.send("deleted");
                 }
             });
-        });
+        }
 
         if (this.monzoConfig) {
             if (monzocredentials.token != "") {
@@ -164,7 +198,7 @@ module.exports = function(RED) {
     /*
     Upon node close i.e when node-red closes or a user redeploys the flow, stop the cronjob and remove it.
      */
-    MonzoWebHookNode.prototype.close = function() {};
+   // MonzoWebHookNode.prototype.close = function() { };
     /*
     Register the monzo credentials node along with the credentials it will need.
      */

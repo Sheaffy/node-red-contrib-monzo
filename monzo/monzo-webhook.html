@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
 
-    function get_monzo_hooks(){
+    function get_monzo_hooks(node){
 
         var headers_dat = "";
         if (localStorage.getItem("auth-tokens") !== null) {
@@ -9,10 +9,8 @@
             tokens = JSON.parse(localStorage.getItem("auth-tokens"))
             headers_dat = "Bearer "+tokens.access_token
         }
-
-
         $.ajax({
-                   url: "/monzo-get-hooks",
+                   url: "/monzo-get-hooks/" + node.id,
                    beforeSend: function(request) {
                         if(headers_dat != ""){
                             request.setRequestHeader("Authorization", headers_dat);
@@ -41,7 +39,7 @@
                                 $(deletebtn).click(function(){
                                     var clickbtn = this;
                                     $.ajax({
-                                       url: "/monzo-delete-hook/"+$(this).attr("hookid"),
+                                       url: "/monzo-delete-hook/"+node.id+"/"+$(this).attr("hookid"),
                                        beforeSend: function(request) {
                                         if(headers_dat != ""){
                                             request.setRequestHeader("Authorization", headers_dat);
@@ -115,8 +113,8 @@
                 }
             });
 
-            
-            get_monzo_hooks();
+            var node = this;
+            get_monzo_hooks(node);
                 
 
          }
