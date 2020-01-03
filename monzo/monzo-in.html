@@ -216,7 +216,9 @@
         defaults: {
             name:{value:""},
             monzocreds: {type:"monzo-credentials",required:true},
-            requesttype:{value:"accounts"}
+            requesttype:{value:"accounts"},
+            potid:{value: ""},
+            accountid:{value: ""}
         },
         inputs:1,
         outputs:1,
@@ -226,6 +228,22 @@
         },
         paletteLabel:function(){
             return "monzo in";
+        },
+        oneditprepare: function(){
+            $('#node-input-requesttype').on("change", function(e){
+                $('.hidden-row-item').hide();
+                var val = $(this).val();
+                if(val == "pot"){
+                    $('.pot-row').show();
+                }else{
+                    $('.pot-row').hide();
+                }
+                if(val == "pot" || val == "pots"){
+                    $('.accountid-row').show();
+                }else{
+                    $('.accountid-row').hide();
+                }
+            });
         }
     });
 </script>
@@ -241,10 +259,19 @@
     <div class="form-row">
         <label for="node-input-requesttype"><i class="icon-tag"></i> Request</label>
         <select id="node-input-requesttype">
-            <option value="accounts">all accounts</>
-            <option value="balances">all balances</>
-            <option value="pots">all pots</>
+            <option value="accounts">all accounts</option>
+            <option value="balances">all balances</option>
+            <option value="pots">all pots</option>
+            <option value="pot">specific pot</option>
         </select>
+    </div>
+    <div class="form-row pot-row" style="display:none;">
+            <label for="node-input-potid"><i class="icon-tag"></i> Pot Id</label>
+            <input type="text" id="node-input-potid">
+    </div>
+    <div class="form-row accountid-row" style="display:none;">
+            <label for="node-input-accountid"><i class="icon-tag"></i> AccountID</label>
+            <input type="text" id="node-input-accountid">
     </div>
 </script>
 <script data-help-name="monzo-in" type="text/x-red">
