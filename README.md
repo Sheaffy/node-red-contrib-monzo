@@ -1,6 +1,6 @@
 # node-red-contrib-monzo
 
-### This is a node-red package that will allow you to retrive information from monzo. (this is not an official node developed by monzo)
+### This is a node-red package that will allow you to retrieve information from monzo. (this is not an official node developed by monzo)
 
 Please Note - Monzo is a bank that is currently only available for UK residents.
 
@@ -13,11 +13,11 @@ This is an easy to use node, all you have to do is input a access token and sele
 - [Getting your permanent AccessToken](#permtoken)
 - [Usage](#usage)
 	- [Monzo-in](#monzoin)
-		- [Capabilitys](#incap)
+		- [Capabilities](#incap)
 	- [Monzo-out](#monzoout)
-		- [Capabilitys](#outcap)
+		- [Capabilities](#outcap)
 	- [Monzo-hook](#monzohook)
-		- [Capabilitys](#hookcap)
+		- [Capabilities](#hookcap)
 
 
 
@@ -43,7 +43,7 @@ After you have placed either nodes, enter its credential configuration, you can 
 
 ### <a name="monzoin"></a> Monzo-in
 select the request type you would like to do. To make a request simply inject anything into the input node to get a response from the output node.
-##### <a name="incap"></a> Capabilitys
+##### <a name="incap"></a> Capabilities
 This node can retreive three kinds of information from your monzo account.
 - Account Information
 - Balance Information
@@ -53,7 +53,7 @@ This node can retreive three kinds of information from your monzo account.
 ### <a name="monzoout"></a> Monzo-out
 Monzo out node has specific requirements in configuration before a request can be successfully made, you must first select or create an authenticated token, then enter an accountID of which changes will be made. Then select the request type, this will dynamically create the new fields to be filled in. Once all fields have been filled in you will be able to make a request. (If you need to find out what the accountID or potID is. use the monzo-in node to find these.)
 
-##### <a name="outcap"></a> Capabilitys
+##### <a name="outcap"></a> Capabilities
 This node can retreive three kinds of information from your monzo account.
 - Pot Deposit
 - Pot Withdraw
@@ -62,6 +62,6 @@ This node can retreive three kinds of information from your monzo account.
 ### <a name="monzohook"></a> Monzo-hook
 Monzo Hook is a node that is used to manage and control webhooks for monzo, it also sets up automatic hook urls and receives the notifications which are then sent out of the node.
 
-##### <a name="hookcap"></a> Capabilitys
+##### <a name="hookcap"></a> Capabilities
 This node can retreive notifcations from registered webhooks on monzo for live notifications, it can also set up remote url hooks if you would like to receive the webhook notifications elsewhere.
 
