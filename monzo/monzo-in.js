@@ -176,6 +176,7 @@ module.exports = function(RED) {
     function MonzoNodeIn(config) {
         RED.nodes.createNode(this, config);
         this.requesttype = config.requesttype;
+        this.responsetype = config.responsetype;
         this.monzoConfig = RED.nodes.getNode(config.monzocreds);
         const Monzo = require('monzo-js');
         var node = this;
@@ -275,12 +276,41 @@ module.exports = function(RED) {
                  */
                 if (this.requesttype == "pots") {
                     monzo.pots.all().then(pots => {
+
+
+                        var outputlist = [];
                         for (const [id, pot] of pots) {
-                            msg.payload = {
-                                "response": {
+
+                            //check for null and everything else to save backwards compatibility
+                            if(this.responsetype == "stream" || this.responsetype == null || this.responsetype == undefined || this.responsetype == ""){
+                                msg.payload = {
+                                    "response": {
+                                        "pot_id": pot.id,
+                                        "pot_name": pot.name,
+                                        "pot_balance": pot.balance
+                                    }
+                                };
+                                node.send(msg);
+                                this.status({
+                                    fill: "green",
+                                    shape: "dot",
+                                    text: "ready"
+                                });
+                            } else if(this.responsetype == "single"){
+                                outputlist.push({
                                     "pot_id": pot.id,
                                     "pot_name": pot.name,
                                     "pot_balance": pot.balance
+                                }); 
+                            }
+                            
+
+                        }
+
+                        if(this.responsetype == "single"){
+                            msg.payload = {
+                                "response": {
+                                    "list": outputlist
                                 }
                             };
                             node.send(msg);
@@ -289,7 +319,9 @@ module.exports = function(RED) {
                                 shape: "dot",
                                 text: "ready"
                             });
-                        }
+                        }   
+
+
                     }).catch(error => {
                         node.error("your token is not authenticated. -> "+error, msg);
                         this.status({

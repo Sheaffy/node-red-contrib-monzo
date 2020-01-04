@@ -216,7 +216,8 @@
         defaults: {
             name:{value:""},
             monzocreds: {type:"monzo-credentials",required:true},
-            requesttype:{value:"accounts"}
+            requesttype:{value:"accounts"},
+            responsetype:{value:"stream"}
         },
         inputs:1,
         outputs:1,
@@ -226,7 +227,22 @@
         },
         paletteLabel:function(){
             return "monzo in";
-        }
+        },
+        oneditprepare: function() {
+
+            $('#node-input-requesttype').on("change", function(e){
+
+                $('.responsetype-row').hide();
+
+                var val = $(this).val();
+                if(val == "pots" ){
+                    $('.responsetype-row').show();
+                }
+
+            });
+
+           
+         }
     });
 </script>
 <script data-template-name="monzo-in" type="text/x-red">
@@ -244,6 +260,13 @@
             <option value="accounts">all accounts</>
             <option value="balances">all balances</>
             <option value="pots">all pots</>
+        </select>
+    </div>
+    <div class="form-row responsetype-row" style="display:none">
+        <label for="node-input-responsetype"><i class="icon-tag"></i> Output As</label>
+        <select id="node-input-responsetype">
+            <option value="stream" selected>stream of responses</>
+            <option value="single">single response</>
         </select>
     </div>
 </script>
